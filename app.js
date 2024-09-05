@@ -33,6 +33,7 @@ const order = require("./routes/orderRoute");
 const coupon = require("./routes/couponRoute");
 const admin = require("./routes/dashboardRoute");
 const contact = require("./routes/contactRoute");
+const free = require("./routes/freebiesRoute");
 
 app.use("/api/v1", user);
 app.use("/api/v1/", product);
@@ -40,6 +41,7 @@ app.use("/api/v1/", order);
 app.use("/api/v1/", coupon);
 app.use("/api/v1/", admin);
 app.use("/api/v1/", contact);
+app.use("/api/v1/", free);
 
 module.exports = app;
 
