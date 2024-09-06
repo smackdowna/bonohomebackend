@@ -9,19 +9,19 @@ const getDataUri = require("../utils/dataUri.js");
 const Product = require("../models/productModel");
 const fs = require("fs");
 
-async function deleteUsersWithExpiredOTP() {
-  try {
-    const currentTime = Date.now();
-    await User.deleteMany({
-      otp_expiry: { $lte: currentTime },
-      otp: { $ne: null }, // Exclude users who have already verified OTP
-    });
-  } catch (error) {
-    console.error("Error deleting users with expired OTP:", error);
-  }
-}
+// async function deleteUsersWithExpiredOTP() {
+//   try {
+//     const currentTime = Date.now();
+//     await User.deleteMany({
+//       otp_expiry: { $lte: currentTime },
+//       otp: { $ne: null }, // Exclude users who have already verified OTP
+//     });
+//   } catch (error) {
+//     console.error("Error deleting users with expired OTP:", error);
+//   }
+// }
 
-setInterval(deleteUsersWithExpiredOTP, 5 * 60 * 1000);
+// setInterval(deleteUsersWithExpiredOTP, 5 * 60 * 1000);
 
 // Register a User
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
@@ -51,71 +51,56 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
       .json({ success: false, message: "User already exists" });
   }
 
-  const otp = Math.floor(Math.random() * 1000000);
+  user = await User.findOne({ phoneNo });
+  if (user) {
+    return res.status(400).json({ success: false, message: "User with this phone number already exists" });
+  }
+
 
   user = await User.create({
     full_name,
     email,
     phoneNo,
     password,
-    dob,
-    otp,
-    otp_expiry: new Date(Date.now() + process.env.OTP_EXPIRE * 60 * 1000),
+    dob
   });
-
-  console.log(otp);
 
   const emailMessage = `Dear ${user.full_name},
 
   Thank you for choosing BonoHome! 🏆
   
-  We're thrilled to have you on board for the upcoming BonoHome event. To ensure the security of your account and expedite your registration process, please verify your account by entering the following One-Time Password (OTP):
-  
-  OTP: ${otp}
-  
-  This OTP is exclusively for you and will expire after a limited time. We encourage you to verify your account promptly to secure your spot at the event.
-  
-  Should you have any questions or concerns, our dedicated support team is here to assist you every step of the way.
-  
-  Thank you for your trust in BonoHomes. We can't wait to see you in action!
-  
-  Best regards,
-  
-  BonoHomes Team 🏅
+  We're thrilled to have you on board for the upcoming BonoHome event. To ensure the security of your account and expedite your registration process.
   `;
 
   //await sendEmail(email, "Verify your account", emailMessage);
 
-  res.status(201).json({
-    success: true,
-    message: "OTP sent to your email",
-  });
+  sendToken(user, 200, res, "You Have successfully registered");
 });
 
-//verify
-exports.verify = catchAsyncErrors(async (req, res, next) => {
-  const otp = Number(req.body.otp);
+// //verify
+// exports.verify = catchAsyncErrors(async (req, res, next) => {
+//   const otp = Number(req.body.otp);
 
-  const user = await User.findOne({ email: req.body.email });
+//   const user = await User.findOne({ email: req.body.email });
 
-  if (!user) {
-    return next(new ErrorHandler("User Doesn't exist", 404));
-  }
+//   if (!user) {
+//     return next(new ErrorHandler("User Doesn't exist", 404));
+//   }
 
-  if (user.otp !== otp || user.otp_expiry < Date.now()) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Invalid OTP or has been Expired" });
-  }
+//   if (user.otp !== otp || user.otp_expiry < Date.now()) {
+//     return res
+//       .status(400)
+//       .json({ success: false, message: "Invalid OTP or has been Expired" });
+//   }
 
-  user.verified = true;
-  user.otp = null;
-  user.otp_expiry = null;
+//   user.verified = true;
+//   user.otp = null;
+//   user.otp_expiry = null;
 
-  await user.save();
+//   await user.save();
 
-  sendToken(user, 200, res, "Account Verified");
-});
+//   sendToken(user, 200, res, "Account Verified");
+// });
 
 //login user
 exports.loginUser = catchAsyncErrors(async (req, res, next) => {

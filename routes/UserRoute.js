@@ -13,7 +13,6 @@ const {
   updateUserRole,
   addWishlist,
   removeWishlist,
-  verify,
   updateUserAddress,
 } = require("../controllers/userController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
@@ -24,7 +23,7 @@ const router = express.Router();
 //register
 router.route("/register").post(registerUser);
 
-router.route("/verify").post(verify);
+// router.route("/verify").post(verify);
 
 //login
 router.route("/login").post(loginUser);
