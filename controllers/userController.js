@@ -25,7 +25,7 @@ const fs = require("fs");
 
 // Register a User
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
-  const { full_name, phoneNo, email, password, confirm_password, dob } =
+  const { full_name, phoneNo, email, password, confirm_password} =
     req.body;
 
   if (
@@ -33,8 +33,7 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     !phoneNo ||
     !email ||
     !password ||
-    !confirm_password ||
-    !dob
+    !confirm_password
   )
     return next(new ErrorHandler("Please fill all details", 400));
 
@@ -61,8 +60,7 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     full_name,
     email,
     phoneNo,
-    password,
-    dob
+    password
   });
 
   const emailMessage = `Dear ${user.full_name},
@@ -283,7 +281,7 @@ exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
 
 // //update user details
 exports.updateUserDetails = catchAsyncErrors(async (req, res, next) => {
-  const { full_name, email, phone } = req.body;
+  const { full_name, email, phoneNo } = req.body;
 
   const file = req.file; // Assuming you are using multer or similar middleware for file uploads
 
@@ -291,7 +289,7 @@ exports.updateUserDetails = catchAsyncErrors(async (req, res, next) => {
 
   if (full_name) user.full_name = full_name;
   if (email) user.email = email;
-  if (phone) user.phone = phone;
+  if (phoneNo) user.phoneNo = phoneNo;
 
   if (!user.avatar) {
     user.avatar = {};

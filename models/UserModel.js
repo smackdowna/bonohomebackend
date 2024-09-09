@@ -84,10 +84,6 @@ const userSchema = new mongoose.Schema({
     required: [true, "Please Enter Your Mobile No"],
     maxLength: [30, "Name cannot exceed 10 Number"],
   },
-  dob: {
-    type: String,
-    required: [true, "Please Enter your date of birth"],
-  },
   avatar: {
     public_id: {
       type: String,
