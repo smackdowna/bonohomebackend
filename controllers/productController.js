@@ -254,7 +254,7 @@ exports.deleteProduct = catchAsyncErrors(async (req, res, next) => {
   );
 
   // Remove the product itself
-  await product.remove();
+  await product.deleteOne();
   myCache.del("all-products", "categories");
 
   res.status(200).json({
