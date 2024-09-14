@@ -20,7 +20,7 @@ app.use(
 
 app.use(
   cors({
-    origin: ["http://localhost:3000","https://binohomeadmin.vercel.app","https://bonhomie.vercel.app"],
+    origin: ["http://localhost:3000","https://binohomeadmin.vercel.app","https://bonhomie.vercel.app","https://bonhomie.vercel.app"],
     credentials: true,
     methods: ["GET", "POST", "DELETE", "PUT"],
   })
