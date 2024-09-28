@@ -18,22 +18,22 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please Enter product specification"],
   },
-  sizes:[
+  sizes: [
     {
-      side:{
-        type:String,
+      side: {
+        type: String,
       },
-      size:{
-        type:String,
+      size: {
+        type: String,
       },
-      basePrice:{
-        type:Number
+      basePrice: {
+        type: Number
       },
-      discountedPercent:{ 
-        type:Number
+      discountedPercent: {
+        type: Number
       },
-      stock:{
-        type:Number
+      stock: {
+        type: Number
       }
     }
   ],
@@ -57,16 +57,23 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please Enter Product Category"],
   },
-  sub_category: {
+  gender: {
+    enum: ["Male", "Female", "Unisex"],
     type: String,
-    required: [true, "Please Enter Product SubCategory"],
+    required: [true, "Please enter the gender"],
   },
-  sub_category2: {
+  age: {
     type: String,
-    default: "", // Optional: Set a default value if needed
+    required: [true, "Please enter age range (e.g., '2-5')"],
+    validate: {
+      validator: function (v) {
+        return /^\d+-\d+$/.test(v);
+      },
+      message: props => `${props.value} is not a valid age range!`
+    }
   },
   color: {
-    type: String, 
+    type: String,
   },
   Availablecolor: {
     type: String,
@@ -104,5 +111,8 @@ const productSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+
+// indexing the category age and colour fields
+productSchema.index({ category: 1, age: 1, color: 1 });
 
 module.exports = mongoose.model("Products", productSchema);
