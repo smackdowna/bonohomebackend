@@ -16,8 +16,8 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
     specification,
     sizes,
     category,
-    sub_category,
-    sub_category2,
+    gender,
+    age,
     color,
     Availablecolor,
   } = req.body;
@@ -30,7 +30,8 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
     !specification ||
     !sizes ||
     !category ||
-    !sub_category ||
+    !gender ||
+    !age ||
     !color ||
     !Availablecolor
   ) {
@@ -58,8 +59,8 @@ exports.createProduct = catchAsyncErrors(async (req, res, next) => {
     specification,
     sizes,
     category,
-    sub_category,
-    sub_category2,
+    gender,
+    age,
     color,
     Availablecolor,
     images: productImages,
@@ -88,7 +89,7 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
 
   let filteredProductsCount = products.length;
 
-  
+
 
   res.status(200).json({
     success: true,
@@ -97,6 +98,7 @@ exports.getAllProducts = catchAsyncErrors(async (req, res, next) => {
     filteredProductsCount,
   });
 });
+
 
 //get All categories
 exports.getAllCategories = catchAsyncErrors(async (req, res, next) => {
@@ -161,34 +163,34 @@ exports.updateProduct = catchAsyncErrors(async (req, res, next) => {
   product.keyFeatures = req.body.keyFeatures || product.keyFeatures;
   product.specification = req.body.specification || product.specification;
   product.category = req.body.category || product.category;
-  product.sub_category = req.body.sub_category || product.sub_category;
-  product.sub_category2 = req.body.sub_category2 || product.sub_category2;
+  product.gender = req.body.gender || product.gender;
+  product.age = req.body.age || product.age;
   product.color = req.body.color || product.color;
   product.Availablecolor = req.body.Availablecolor || product.Availablecolor;
   product.numOfReviews = req.body.numOfReviews || product.numOfReviews;
 
   // Update sizes array if provided in the request
-if (req.body.sizes && req.body.sizes.length > 0) {
-  // Iterate over each size object provided in the request
-  for (const updatedSize of req.body.sizes) {
-    // Log the updatedSize._id for comparison
+  if (req.body.sizes && req.body.sizes.length > 0) {
+    // Iterate over each size object provided in the request
+    for (const updatedSize of req.body.sizes) {
+      // Log the updatedSize._id for comparison
 
-    // Find the corresponding size object in product.sizes
-    const sizeToUpdate = product.sizes.find(size => size._id.toString() === updatedSize._id.toString());
+      // Find the corresponding size object in product.sizes
+      const sizeToUpdate = product.sizes.find(size => size._id.toString() === updatedSize._id.toString());
 
-    
 
-    // If the size object is found
-    if (sizeToUpdate) {
-      // Update each field of the size object if provided in the request
-      sizeToUpdate.size = updatedSize.size !== undefined ? updatedSize.size : sizeToUpdate.size;
-      sizeToUpdate.stock = updatedSize.stock !== undefined ? updatedSize.stock : sizeToUpdate.stock;
-      sizeToUpdate.basePrice = updatedSize.basePrice !== undefined ? updatedSize.basePrice : sizeToUpdate.basePrice;
-      sizeToUpdate.discountedPercent = updatedSize.discountedPercent !== undefined ? updatedSize.discountedPercent : sizeToUpdate.discountedPercent;
-      sizeToUpdate.side = updatedSize.side !== undefined ? updatedSize.side : sizeToUpdate.side;
+
+      // If the size object is found
+      if (sizeToUpdate) {
+        // Update each field of the size object if provided in the request
+        sizeToUpdate.size = updatedSize.size !== undefined ? updatedSize.size : sizeToUpdate.size;
+        sizeToUpdate.stock = updatedSize.stock !== undefined ? updatedSize.stock : sizeToUpdate.stock;
+        sizeToUpdate.basePrice = updatedSize.basePrice !== undefined ? updatedSize.basePrice : sizeToUpdate.basePrice;
+        sizeToUpdate.discountedPercent = updatedSize.discountedPercent !== undefined ? updatedSize.discountedPercent : sizeToUpdate.discountedPercent;
+        sizeToUpdate.side = updatedSize.side !== undefined ? updatedSize.side : sizeToUpdate.side;
+      }
     }
   }
-}
 
 
   await product.save();
